@@ -1,0 +1,285 @@
+---
+title: "Bryan_Pruneda_Project_Markdown"
+author: "Bryan Pruneda"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r project}
+
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+
+data <- read.csv("C:/Users/prune/OneDrive/Desktop/Stats Class/CaseStudy1-data.csv")
+
+str(data)
+
+head(data)
+
+#First Catagory to test JobRole
+top_reasons <- data %>%
+  filter(Attrition == "Yes") %>%  
+  group_by(EducationField) %>%
+  summarise(count = n()) %>%
+  arrange(desc(count)) %>%
+  slice_head(n = 3)
+
+print(top_reasons)
+
+
+job_role_trends <- data %>%
+  group_by(JobRole, Attrition) %>%
+  summarise(count = n()) %>%
+  ungroup() %>%
+  pivot_wider(names_from = Attrition, values_from = count, values_fill = 0) %>%
+  mutate(attrition_rate = `Yes` / (`Yes` + `No`))
+
+
+print(job_role_trends)
+
+
+ggplot(job_role_trends, aes(x = JobRole, y = attrition_rate, fill = JobRole)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  labs(title = "Attrition Rate by Job Role", x = "Job Role", y = "Attrition Rate") +
+  theme_minimal() +
+  theme(legend.position = "none") 
+
+
+#Second Catagory to test BusinessTravel
+top_reasons2 <- data %>%
+  filter(Attrition == "Yes") %>%  
+  group_by(BusinessTravel) %>%
+  summarise(count = n()) %>%
+  arrange(desc(count)) %>%
+  slice_head(n = 3)
+
+print(top_reasons2)
+
+job_role_trends2 <- data %>%
+  group_by(BusinessTravel, Attrition) %>%
+  summarise(count = n()) %>%
+  ungroup() %>%
+  pivot_wider(names_from = Attrition, values_from = count, values_fill = 0) %>%
+  mutate(attrition_rate = `Yes` / (`Yes` + `No`))
+
+
+print(job_role_trends2)
+
+ggplot(job_role_trends2, aes(x = BusinessTravel, y = attrition_rate, fill = BusinessTravel)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  labs(title = "Attrition Rate by Business Travel", x = "Business Travel", y = "Attrition Rate") +
+  theme_minimal()
+
+
+
+
+#Third Catagory to test EnviormentSatisfaction
+top_reasons3 <- data %>%
+  filter(Attrition == "Yes") %>%  
+  group_by(EnvironmentSatisfaction) %>%
+  summarise(count = n()) %>%
+  arrange(desc(count)) %>%
+  slice_head(n = 3)
+
+print(top_reasons3)
+
+job_role_trends3 <- data %>%
+  group_by(EnvironmentSatisfaction, Attrition) %>%
+  summarise(count = n()) %>%
+  ungroup() %>%
+  pivot_wider(names_from = Attrition, values_from = count, values_fill = 0) %>%
+  mutate(attrition_rate = `Yes` / (`Yes` + `No`)) 
+
+
+print(job_role_trends3)
+
+ggplot(job_role_trends3, aes(x = EnvironmentSatisfaction, y = attrition_rate, fill = EnvironmentSatisfaction)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  labs(title = "Attrition Rate by Environment Satisfaction", x = "Satisfaction", y = "Attrition Rate") +
+  theme_minimal()
+
+
+#Fourth Catagory to test WorkLifeBalance
+top_reasons4 <- data %>%
+  filter(Attrition == "Yes") %>% 
+  group_by(WorkLifeBalance) %>%
+  summarise(count = n()) %>%
+  arrange(desc(count)) %>%
+  slice_head(n = 3)
+
+print(top_reasons4)
+
+job_role_trends4 <- data %>%
+  group_by(WorkLifeBalance, Attrition) %>%
+  summarise(count = n()) %>%
+  ungroup() %>%
+  pivot_wider(names_from = Attrition, values_from = count, values_fill = 0) %>%
+  mutate(attrition_rate = `Yes` / (`Yes` + `No`)) 
+
+
+print(job_role_trends4)
+
+ggplot(job_role_trends4, aes(x = WorkLifeBalance, y = attrition_rate, fill = WorkLifeBalance)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  labs(title = "Attrition Rate by Work Life Balance", x = "Work Life Balance", y = "Attrition Rate") +
+  theme_minimal()
+
+
+#Fifth Catagory to test Department
+top_reasons5 <- data %>%
+  filter(Attrition == "Yes") %>% 
+  group_by(Department) %>%
+  summarise(count = n()) %>%
+  arrange(desc(count)) %>%
+  slice_head(n = 3)
+
+print(top_reasons5)
+
+job_role_trends5 <- data %>%
+  group_by(Department, Attrition) %>%
+  summarise(count = n()) %>%
+  ungroup() %>%
+  pivot_wider(names_from = Attrition, values_from = count, values_fill = 0) %>%
+  mutate(attrition_rate = `Yes` / (`Yes` + `No`)) 
+
+#####################
+print(job_role_trends5)
+
+ggplot(job_role_trends5, aes(x = Department, y = attrition_rate, fill = Department)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  labs(title = "Attrition Rate by Department", x = "Department", y = "Attrition Rate") +
+  theme_minimal()
+
+
+library(e1071)  # For naiveBayes
+library(caret)  # For confusionMatrix
+
+data <- read.csv("C:/Users/prune/OneDrive/Desktop/Stats Class/CaseStudy1-data.csv")
+
+data <- na.omit(data)
+
+# Convert categorical variables to factors
+data$Attrition <- as.factor(data$Attrition)
+data$JobRole <- as.factor(data$JobRole)
+
+# Splitting the data into training and test sets
+set.seed(1256)
+train_index <- sample(1:nrow(data), 0.7 * nrow(data))
+train_data <- data[train_index, ]
+test_data <- data[-train_index, ]
+
+
+# Fit the First Naive Bayes Model
+model_nb1 <- naiveBayes(Attrition ~ JobRole + BusinessTravel + EnvironmentSatisfaction, data = train_data)
+
+# Get predicted probabilities
+pred_probs_nb1 <- predict(model_nb1, test_data, type = "raw")
+
+
+threshold <- 0.19
+predictions_nb1_adjusted <- ifelse(pred_probs_nb1[, "Yes"] > threshold, "Yes", "No")
+
+# Confusion Matrix and Performance Metrics for Model 1 
+confusion_nb1_adjusted <- confusionMatrix(factor(predictions_nb1_adjusted, levels = c("Yes", "No")), test_data$Attrition)
+print(confusion_nb1_adjusted)
+
+# Model 1 Metrics
+tn1 <- confusion_nb1_adjusted$table[1, 1]  # True Negatives
+fp1 <- confusion_nb1_adjusted$table[1, 2]  # False Positives
+fn1 <- confusion_nb1_adjusted$table[2, 1]  # False Negatives
+tp1 <- confusion_nb1_adjusted$table[2, 2]  # True Positives
+
+precision1 <- tp1 / (tp1 + fp1)
+sensitivity1 <- tp1 / (tp1 + fn1)
+f1_score1 <- 2 * (precision1 * sensitivity1) / (precision1 + sensitivity1)
+
+precision1
+sensitivity1
+f1_score1 
+
+
+# Fit the Second Naive Bayes Model
+model_nb2 <- naiveBayes(Attrition ~ JobRole + BusinessTravel +  WorkLifeBalance, data = train_data)
+
+# Get predicted probabilities
+pred_probs_nb2 <- predict(model_nb2, test_data, type = "raw")
+
+threshold <- 0.18
+predictions_nb2_adjusted <- ifelse(pred_probs_nb2[, "Yes"] > threshold, "Yes", "No")
+
+# Confusion Matrix and Performance Metrics for Model 2
+confusion_nb2_adjusted <- confusionMatrix(factor(predictions_nb2_adjusted, levels = c("Yes", "No")), test_data$Attrition)
+print(confusion_nb2_adjusted)
+
+
+
+# Model 2 Metrics
+tn2 <- confusion_nb2$table[1, 1]  # True Negatives
+fp2 <- confusion_nb2$table[1, 2]  # False Positives
+fn2 <- confusion_nb2$table[2, 1]  # False Negatives
+tp2 <- confusion_nb2$table[2, 2]  # True Positives
+
+precision2 <- tp2 / (tp2 + fp2)
+sensitivity2 <- tp2 / (tp2 + fn2)
+f1_score2 <- 2 * (precision2 * sensitivity2) / (precision2 + sensitivity2)
+
+
+precision2
+sensitivity2
+f1_score2
+
+
+
+
+library(dplyr)
+library(e1071)
+
+# Load the new dataset 
+new_data <- read.csv("C:/Users/prune/OneDrive/Desktop/Stats Class/CaseStudy1CompSet No Attrition.csv")  
+
+# For model_nb1
+new_data_model1 <- new_data %>%
+  select(JobRole, BusinessTravel, EnvironmentSatisfaction, WorkLifeBalance)
+
+# For model_nb2
+new_data_model2 <- new_data %>%
+  select(Age, DistanceFromHome, NumCompaniesWorked, TotalWorkingYears)
+
+# Make predictions using the first model
+pred_probs_nb1 <- predict(model_nb1, new_data_model1, type = "raw")
+predictions_nb1 <- ifelse(pred_probs_nb1[, "Yes"] > 0.19, "Yes", "No") 
+
+# Make predictions using the second model
+pred_probs_nb2 <- predict(model_nb2, new_data_model2, type = "raw")
+predictions_nb2 <- ifelse(pred_probs_nb2[, "Yes"] > 0.18, "Yes", "No") 
+
+# Combine predictions with IDs
+output <- new_data %>%
+  select(ID) %>% 
+  mutate(Prediction_Model1 = predictions_nb1,
+         Prediction_Model2 = predictions_nb2)
+
+# Save the output to a CSV file
+write.csv(output, "C:\\Users\\prune\\OneDrive\\Desktop\\Stats Class\\attrition_predictions.csv", row.names = FALSE)
+
+print(output)
+
+
+
+```
