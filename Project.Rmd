@@ -255,11 +255,11 @@ new_data <- read.csv("C:/Users/prune/OneDrive/Desktop/Stats Class/CaseStudy1Comp
 
 # For model_nb1
 new_data_model1 <- new_data %>%
-  select(JobRole, BusinessTravel, EnvironmentSatisfaction, WorkLifeBalance)
+  select(JobRole, BusinessTravel, EnvironmentSatisfaction)
 
 # For model_nb2
 new_data_model2 <- new_data %>%
-  select(Age, DistanceFromHome, NumCompaniesWorked, TotalWorkingYears)
+  select(JobRole, BusinessTravel,, WorkLifeBalance)
 
 # Make predictions using the first model
 pred_probs_nb1 <- predict(model_nb1, new_data_model1, type = "raw")
