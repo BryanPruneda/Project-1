@@ -227,13 +227,14 @@ predictions_nb2_adjusted <- ifelse(pred_probs_nb2[, "Yes"] > threshold, "Yes", "
 confusion_nb2_adjusted <- confusionMatrix(factor(predictions_nb2_adjusted, levels = c("Yes", "No")), test_data$Attrition)
 print(confusion_nb2_adjusted)
 
-
+# Access the confusion matrix table
+confusion_table2 <- confusion_nb2_adjusted$table
 
 # Model 2 Metrics
-tn2 <- confusion_nb2$table[1, 1]  # True Negatives
-fp2 <- confusion_nb2$table[1, 2]  # False Positives
-fn2 <- confusion_nb2$table[2, 1]  # False Negatives
-tp2 <- confusion_nb2$table[2, 2]  # True Positives
+tn2 <- confusion_table2[1, 1]  # True Negatives
+fp2 <- confusion_table2[1, 2]  # False Positives
+fn2 <- confusion_table2[2, 1]  # False Negatives
+tp2 <- confusion_table2[2, 2]  # True Positives
 
 precision2 <- tp2 / (tp2 + fp2)
 sensitivity2 <- tp2 / (tp2 + fn2)
